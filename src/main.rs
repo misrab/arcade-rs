@@ -1,11 +1,28 @@
 extern crate sdl2;
 
+// #[macro_use] asks the compiler to import the macros defined in the `events`
+// module. This is necessary because macros cannot be namespaced -- macro
+// expansion happens before the concept of namespace even starts to _exist_ in
+// the compilation timeline.
+#[macro_use]
 mod events;
 
-use events::Events;
+// use events::Events;
 use sdl2::pixels::Color;
 // use std::thread;
 // use std::time::Duration;
+
+// We cannot call functions at top-level. However, `struct_events` is not your
+// usual function: it's a macro. Which means that you can use a macro to do
+// pretty much anything _normal_ code would.
+struct_events! {
+    keyboard: {
+        key_escape: Escape,
+        key_up: Up,
+        key_down: Down
+    }
+}
+
 
 
 fn main() {
@@ -30,7 +47,7 @@ fn main() {
     loop {
         events.pump();
 
-        if events.quit || events.key_escape {
+        if events.now.key_escape == Some(true) {
             break;
         }
 
